@@ -23,7 +23,6 @@ jobs:
       - name: Build
         run: |
           npm run build
-          cd dist && zip -r -9 api.zip *
       - name: Lambda code update
         run: |
           aws lambda update-function-code --function-name test-lambda-ts --zip-file fileb://./dist/api.zip
