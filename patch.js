@@ -12,7 +12,7 @@ try {
   fs.writeFileSync("./version.js", content);
 
   child_process.execSync(
-    `rm -rf dist ; mkdir dist ; zip -r ./dist/api.zip version.js`,
+    `rm -rf dist ; mkdir dist ; zip -r ./dist/api.zip ./version.js`,
   );
 } catch (err) {
   console.error(err);
