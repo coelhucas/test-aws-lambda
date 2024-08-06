@@ -7,8 +7,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v1
+        name: Configure AWS credentials
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
       - name: Node.js setup
         uses: actions/setup-node@v4
@@ -19,12 +24,6 @@ jobs:
         run: |
           npm run build
           cd dist && zip -r -9 api.zip *
-
-      - name: Update
-        uses: kazimanzurrashid/aws-lambda-update-action@v2.0.3
-        with:
-          zip-file: dist/api.zip
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Lambda code update
+        run: |
+          aws lambda update-function-code --function-name test-lambda-ts --zip-file fileb://./dist/api.zip
